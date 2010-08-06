@@ -155,6 +155,10 @@ extern int androidSetThreadPriority(pid_t tid, int prio);
 #include <utils/RefBase.h>
 #include <utils/Timers.h>
 
+#ifndef inline
+#define inline extern inline
+#endif
+
 namespace android {
 
 typedef android_thread_id_t thread_id_t;
@@ -229,9 +233,9 @@ public:
     // constructed and released when Autolock goes out of scope.
     class Autolock {
     public:
-        inline Autolock(Mutex& mutex) : mLock(mutex)  { mLock.lock(); }
-        inline Autolock(Mutex* mutex) : mLock(*mutex) { mLock.lock(); }
-        inline ~Autolock() { mLock.unlock(); }
+        Autolock(Mutex& mutex) : mLock(mutex)  { mLock.lock(); }
+        Autolock(Mutex* mutex) : mLock(*mutex) { mLock.lock(); }
+        ~Autolock() { mLock.unlock(); }
     private:
         Mutex& mLock;
     };
@@ -251,7 +255,7 @@ private:
 #endif
 };
 
-#if defined(HAVE_PTHREADS)
+#if defined(HAVE_PTHREADS) && !defined(THREADS_IMPL)
 
 inline Mutex::Mutex() {
     pthread_mutex_init(&mMutex, NULL);
@@ -270,9 +274,12 @@ inline Mutex::Mutex(int type, const char* name) {
         pthread_mutex_init(&mMutex, NULL);
     }
 }
+/*
+If we define that here, no D1 destructor will be emited ... no one knows why
 inline Mutex::~Mutex() {
     pthread_mutex_destroy(&mMutex);
-}
+}*/
+
 inline status_t Mutex::lock() {
     return -pthread_mutex_lock(&mMutex);
 }
@@ -330,7 +337,7 @@ private:
 #endif
 };
 
-#if defined(HAVE_PTHREADS)
+#if defined(HAVE_PTHREADS) && !defined(THREADS_IMPL)
 
 inline Condition::Condition() {
     pthread_cond_init(&mCond, NULL);
@@ -443,13 +450,11 @@ private:
     volatile bool           mExitPending;
     volatile bool           mRunning;
             sp<Thread>      mHoldSelf;
-#if HAVE_ANDROID_OS
-            int             mTid;
-#endif
 };
 
 
 }; // namespace android
+#undef inline
 
 #endif  // __cplusplus
 
