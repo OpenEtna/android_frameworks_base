@@ -1165,6 +1165,13 @@ public class GpsLocationProvider implements LocationProviderInterface {
             }
         }
 
+        /* BUG workaround: the korean-v10t libloc-api does not send
+         * GPS_STATUS_SESSION_BEGIN (but does send GPS_STATUS_SESSION_END)
+         * so we emulate GPS_STATUS_SESSION_BEGIN when we receive the first location */
+        if( !mNavigating )
+          reportStatus(GPS_STATUS_SESSION_BEGIN);
+ 
+
         updateStatus(mStatus, svCount);
 
         if (mNavigating && mStatus == LocationProvider.AVAILABLE && mLastFixTime > 0 &&
