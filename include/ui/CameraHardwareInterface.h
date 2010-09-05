@@ -86,6 +86,7 @@ public:
 
     /** Return the IMemoryHeap for the preview image heap */
     virtual sp<IMemoryHeap>         getPreviewHeap() const = 0;
+    virtual sp<IMemoryHeap>         getPreviewHeap(int32_t i) const = 0;
 
     /** Return the IMemoryHeap for the raw image heap */
     virtual sp<IMemoryHeap>         getRawHeap() const = 0;

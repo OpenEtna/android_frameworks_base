@@ -32,6 +32,12 @@ namespace android {
 
 typedef int32_t    SurfaceID;
 
+#define NUM_SF_BUFFERS 4
+enum {
+     SINGLE_HEAP,
+     MULTI_HEAP
+};
+
 class IMemoryHeap;
 class OverlayRef;
 class GraphicBuffer;
@@ -68,6 +74,12 @@ public:
                 int32_t hor_stride, int32_t ver_stride, 
                 PixelFormat format, uint32_t transform, uint32_t flags,
                 const sp<IMemoryHeap>& heap);
+       
+        BufferHeap(uint32_t w, uint32_t h,
+                int32_t hor_stride, int32_t ver_stride,
+                PixelFormat format, uint32_t transform, uint32_t flags,
+                const sp<IMemoryHeap>& heap0, const sp<IMemoryHeap>& heap1,
+                const sp<IMemoryHeap>& heap2, const sp<IMemoryHeap>& heap3); 
         
         ~BufferHeap(); 
         
@@ -78,7 +90,9 @@ public:
         PixelFormat format;
         uint32_t transform;
         uint32_t flags;
+        uint32_t htype;
         sp<IMemoryHeap> heap;
+        sp<IMemoryHeap> heaps[NUM_SF_BUFFERS];
     };
     
     virtual status_t registerBuffers(const BufferHeap& buffers) = 0;

@@ -67,6 +67,16 @@ extern "C" {
 static int debug_frame_cnt;
 #endif
 
+struct camera_size_type {
+    int width;
+    int height;
+};
+
+static const camera_size_type preview_sizes[] = {
+    { 1280, 720 }, // 720P
+    { 768, 432 },
+};
+
 static int getCallingPid() {
     return IPCThreadState::self()->getCallingPid();
 }
@@ -560,6 +570,13 @@ status_t CameraService::Client::setOverlay()
     CameraParameters params(mHardware->getParameters());
     params.getPreviewSize(&w, &h);
 
+    //for 720p recording , preview can be 800X448
+    if(w == preview_sizes[0].width && h==preview_sizes[0].height){
+        LOGD("Changing overlay dimensions to 768X432 for 720p recording.");
+        w = preview_sizes[1].width;
+        h = preview_sizes[1].height;
+    }
+
     if ( w != mOverlayW || h != mOverlayH )
     {
         // Force the destruction of any previous overlay
@@ -616,12 +633,25 @@ status_t CameraService::Client::registerPreviewBuffers()
       LOGV("portrait mode");
       transform = ISurface::BufferHeap::ROT_90;
     }
+
+    LOGD("CameraService::Client::registerPreviewBuffers") ;
+    //for 720p recording , preview can be 800X448
+    if(w ==  preview_sizes[0].width && h== preview_sizes[0].height){
+        LOGD("registerpreviewbufs :changing dimensions to 768X432 for 720p recording.");
+        w = preview_sizes[1].width;
+        h = preview_sizes[1].height;
+    }
     ISurface::BufferHeap buffers(w, h, w, h,
                                  PIXEL_FORMAT_YCbCr_420_SP,
                                  transform,
                                  0,
-                                 mHardware->getPreviewHeap());
-
+                                 mHardware->getPreviewHeap(0),
+				 mHardware->getPreviewHeap(1),
+				 mHardware->getPreviewHeap(2),
+				 mHardware->getPreviewHeap(3));
+    for( int i = 0 ; i < 4 ; i++ ) {
+      mHeapBase[i] = mHardware->getPreviewHeap(i)->base() ;				 
+    }
     status_t ret = mSurface->registerBuffers(buffers);
     if (ret != NO_ERROR) {
         LOGE("registerBuffers failed with status %d", ret);
@@ -943,6 +973,9 @@ void CameraService::Client::handleShutter(
             h &= ~1;
             LOGD("Snapshot image width=%d, height=%d", w, h);
         }
+        LOGD("Snapshot image width=%d, height=%d", w, h);
+
+        // FIXME: don't use hardcoded format constants here
         ISurface::BufferHeap buffers(w, h, w, h,
             PIXEL_FORMAT_YCbCr_420_SP, transform, 0, mHardware->getRawHeap());
 
@@ -956,7 +989,14 @@ void CameraService::Client::handlePreviewData(const sp<IMemory>& mem)
     ssize_t offset;
     size_t size;
     sp<IMemoryHeap> heap = mem->getMemory(&offset, &size);
-
+   
+    // Locate buffer index
+    for( int i = 0 ; i < 4 ; i++ ) {
+      if( mHeapBase[i] == heap->base() ) {
+	  offset = i ;
+      }
+    }
+    
 #if DEBUG_HEAP_LEAKS && 0 // debugging
     if (gWeakHeap == NULL) {
         if (gWeakHeap != heap) {
