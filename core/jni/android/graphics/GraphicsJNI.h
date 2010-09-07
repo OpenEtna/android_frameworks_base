@@ -10,7 +10,7 @@ class SkCanvas;
 class SkPaint;
 class SkPicture;
 
-class GraphicsJNI {
+class  __attribute__ ((visibility("default"))) GraphicsJNI {
 public:
     // returns true if an exception is set (and dumps it out to the Log)
     static bool hasException(JNIEnv*);
