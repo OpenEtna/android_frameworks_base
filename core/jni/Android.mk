@@ -126,7 +126,8 @@ LOCAL_SRC_FILES:= \
 	android_backup_BackupDataInput.cpp \
 	android_backup_BackupDataOutput.cpp \
 	android_backup_FileBackupHelperBase.cpp \
-	android_backup_BackupHelperDispatcher.cpp
+	android_backup_BackupHelperDispatcher.cpp \
+	android_hardware_fm.cpp
 
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE) \
@@ -148,7 +149,8 @@ LOCAL_C_INCLUDES += \
 	external/tremor/Tremor \
 	external/icu4c/i18n \
 	external/icu4c/common \
-	frameworks/opt/emoji
+	frameworks/opt/emoji \
+	kernel/include
 
 LOCAL_SHARED_LIBRARIES := \
 	libexpat \
