@@ -68,7 +68,7 @@ private:
     bool mManualCameraCallbackSet;       // Whether the callback has been set, used to reduce unnecessary calls to set the callback.
 };
 
-sp<Camera> get_native_camera(JNIEnv *env, jobject thiz, JNICameraContext** pContext)
+sp<Camera> __attribute__ ((visibility("default"))) get_native_camera(JNIEnv *env, jobject thiz, JNICameraContext** pContext)
 {
     sp<Camera> camera;
     Mutex::Autolock _l(sLock);

@@ -470,6 +470,7 @@ sp<IBinder> ibinderForJavaObject(JNIEnv* env, jobject obj)
     return NULL;
 }
 
+__attribute__ ((visibility("default")))
 Parcel* parcelForJavaObject(JNIEnv* env, jobject obj)
 {
     if (obj) {
@@ -1632,6 +1633,7 @@ int register_android_os_Binder(JNIEnv* env)
 namespace android {
 
 // Returns the Unix file descriptor for a ParcelFileDescriptor object
+__attribute__ ((visibility("default")))
 int getParcelFileDescriptorFD(JNIEnv* env, jobject object)
 {
     return env->GetIntField(object, gFileDescriptorOffsets.mDescriptor);
