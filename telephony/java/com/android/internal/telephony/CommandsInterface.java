@@ -1402,4 +1402,8 @@ public interface CommandsInterface {
      *          Callback message containing {@link IccCardStatus} structure for the card.
      */
     public void getIccCardStatus(Message result);
+
+    public void getModemVersion(Message result);
+    public void getFactoryVersion(Message result);
+    public void getHWVersion(Message result);
 }

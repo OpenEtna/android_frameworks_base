@@ -1726,4 +1726,8 @@ public interface Phone {
      * false otherwise
      */
     boolean isCspPlmnEnabled();
+    void getModemVersion(Message result);
+    void getFactoryVersion(Message result);
+    void getHWVersion(Message result);
+
 }

@@ -1045,4 +1045,16 @@ public abstract class PhoneBase extends Handler implements Phone {
         Log.e(LOG_TAG, "Error! " + name + "() in PhoneBase should not be " +
                 "called, GSMPhone inactive.");
     }
+
+    public void getModemVersion(Message result) {
+        mCM.getModemVersion(result);
+    }
+
+    public void getFactoryVersion(Message result) {
+        mCM.getFactoryVersion(result);
+    }
+
+    public void getHWVersion(Message result) {
+        mCM.getHWVersion(result);
+    }
 }
