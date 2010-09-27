@@ -1470,4 +1470,8 @@ public final class SimulatedCommands extends BaseCommands
     public void getHWVersion(Message response) {
         unimplemented(response);
     }
+
+    public void sendSTKInitCompleted() {
+        //unimplemented(response);
+    }
 }

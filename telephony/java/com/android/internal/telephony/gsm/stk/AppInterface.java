@@ -87,4 +87,6 @@ public interface AppInterface {
             return null;
         }
     }
+
+    public void sendSTKInitCompleted();
 }
