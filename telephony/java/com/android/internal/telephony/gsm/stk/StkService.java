@@ -633,4 +633,8 @@ public class StkService extends Handler implements AppInterface {
         sendTerminalResponse(cmdDet, resMsg.resCode, false, 0, resp);
         mCurrntCmd = null;
     }
+
+    public void sendSTKInitCompleted() {
+        mCmdIf.sendSTKInitCompleted();
+    }
 }
