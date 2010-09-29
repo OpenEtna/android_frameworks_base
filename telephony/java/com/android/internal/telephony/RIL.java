@@ -2889,12 +2889,15 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             dc.number = p.readString();
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
+            p.readInt(); /*num_septet*/
+            p.readInt(); /*num_byte*/
             dc.name = p.readString();
-            dc.namePresentation = p.readInt();
+            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
 
             // Make sure there's a leading + on addresses with a TOA of 145
             dc.number = PhoneNumberUtils.stringFromStringAndTOA(dc.number, dc.TOA);
 
+            Log.i(LOG_TAG,"Got responseCallList: " + dc.toString());
             response.add(dc);
 
             if (dc.isVoicePrivacy) {
