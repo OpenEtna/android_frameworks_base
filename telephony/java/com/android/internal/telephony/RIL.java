@@ -2017,7 +2017,9 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case 1: newState = RadioState.RADIO_UNAVAILABLE; break;
             case 2: newState = RadioState.SIM_NOT_READY; break;
             case 3: newState = RadioState.SIM_LOCKED_OR_ABSENT; break;
-            case 4: newState = RadioState.SIM_READY; break;
+            case 4: newState = RadioState.SIM_READY;
+                    sendSTKInitCompleted();
+                    break;
             case 5: newState = RadioState.RUIM_NOT_READY; break;
             case 6: newState = RadioState.RUIM_READY; break;
             case 7: newState = RadioState.RUIM_LOCKED_OR_ABSENT; break;
