@@ -698,7 +698,7 @@ int EventHub::open_device(const char *deviceName)
 
         char klPropName[300];
         char keylayoutfile[PROPERTY_VALUE_MAX];
-        snprintf(klPropName, sizeof(klPropName), "persist.keylayout.%s", tmpfn);
+        snprintf(klPropName, sizeof(klPropName), "persist.sys.kl.%s", tmpfn);
         property_get(klPropName, keylayoutfile, tmpfn);
 
         // find the .kl file we need for this device
