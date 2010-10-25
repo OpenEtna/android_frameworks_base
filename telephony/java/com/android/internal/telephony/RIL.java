@@ -2936,6 +2936,21 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             dc.name = p.readString();
             dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
 
+            // On Rogers network where CNAP is supported the caller id information
+            // from the 1.6 Korean RILD is sometimes incorrect.
+            // If the RILD supplies a Number Presentation of 'Payphone'
+            // and the number has also been provided we have probably hit the bug
+            if( dc.numberPresentation == Connection.PRESENTATION_PAYPHONE
+                    && dc.number.length() != 0 ) {
+
+                // Correct numnber presentation info
+                dc.numberPresentation = Connection.PRESENTATION_ALLOWED;
+
+                // Discard name and name presentation info
+                dc.name = "";
+                dc.namePresentation = Connection.PRESENTATION_ALLOWED;
+            }
+
             // Make sure there's a leading + on addresses with a TOA of 145
             dc.number = PhoneNumberUtils.stringFromStringAndTOA(dc.number, dc.TOA);
 
