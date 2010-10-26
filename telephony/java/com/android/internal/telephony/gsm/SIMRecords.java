@@ -35,6 +35,7 @@ import com.android.internal.telephony.IccUtils;
 import com.android.internal.telephony.IccVmFixedException;
 import com.android.internal.telephony.IccVmNotSupportedException;
 import com.android.internal.telephony.MccTable;
+import com.android.internal.telephony.SimRegionCache;
 
 import java.util.ArrayList;
 
@@ -497,6 +498,8 @@ public final class SIMRecords extends IccRecords {
                 }
 
                 Log.d(LOG_TAG, "IMSI: " + imsi.substring(0, 6) + "xxxxxxxxx");
+
+                SimRegionCache.setRegion(imsi);
 
                 if (mncLength == UNKNOWN) {
                     // the SIM has told us all it knows, but it didn't know the mnc length.

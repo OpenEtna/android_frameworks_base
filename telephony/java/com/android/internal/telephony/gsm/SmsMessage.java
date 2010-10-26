@@ -791,7 +791,7 @@ public class SmsMessage extends SmsMessageBase{
             String ret;
 
             try {
-                ret = new String(pdu, cur, byteCount, "KSC5601");
+                ret = new String(pdu, cur, byteCount, "EUC-KR");
             } catch (UnsupportedEncodingException ex) {
                 // Should return same as ENCODING_UNKNOWN on error.
                 ret = null;
@@ -1075,10 +1075,20 @@ public class SmsMessage extends SmsMessageBase{
                     break;
 
                 case 1: // 8 bit data
-                case 3: // reserved
                     Log.w(LOG_TAG, "1 - Unsupported SMS data coding scheme "
                             + (dataCodingScheme & 0xff));
                     encodingType = ENCODING_8BIT;
+                    break;
+
+                case 3: // reserved (or KSC5601 for Korean SIM)
+                    Log.w(LOG_TAG, "3 - Unsupported SMS data coding scheme "
+                            + (dataCodingScheme & 0xff));
+                    if (SimRegionCache.getRegion() == SimRegionCache.MCC_KOREAN) {
+                        Log.w(LOG_TAG, "Korean SIM, using KSC5601 for decoding.");
+                        encodingType = ENCODING_KSC5601;
+                    } else {
+                        encodingType = ENCODING_8BIT;
+                    }
                     break;
                 }
             }
