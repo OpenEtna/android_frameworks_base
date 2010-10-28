@@ -737,6 +737,10 @@ public class PduPersister {
 
         try {
             byte[] data = part.getData();
+            if (data == null) {
+                data = new byte[0];
+            }
+
             if (ContentType.TEXT_PLAIN.equals(contentType)
                     || ContentType.APP_SMIL.equals(contentType)
                     || ContentType.TEXT_HTML.equals(contentType)) {
