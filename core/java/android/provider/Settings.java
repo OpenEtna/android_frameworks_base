@@ -2248,6 +2248,12 @@ public final class Settings {
         public static final String LOCKSCREEN_PHONE_MESSAGING_TAB = "lockscreen_phone_messaging_tab";
 
         /**
+         * App to launch with the custom messaging tab
+         * @hide
+         */
+        public static final String LOCKSCREEN_MESSAGING_TAB_APP = "lockscreen_messaging_tab_app";
+
+        /**
          * Whether to use a custom pull-down notification screen
          * @hide 
          */
@@ -2378,6 +2384,12 @@ public final class Settings {
         public static final String LOCKSCREEN_GESTURES_SENSITIVITY = "lockscreen_gestures_sensitivity";
 
         /**
+         * Color value for gestures on lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_GESTURES_COLOR = "lockscreen_gestures_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          * @hide
@@ -2458,7 +2470,8 @@ public final class Settings {
             QUIET_HOURS_MUTE,
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
-            LOCKSCREEN_GESTURES_SENSITIVITY
+            LOCKSCREEN_GESTURES_SENSITIVITY,
+            LOCKSCREEN_GESTURES_COLOR
         };
 
         // Settings moved to Settings.Secure
@@ -4172,6 +4185,12 @@ public final class Settings {
          * @hide
          */
         public static final String MVNO_ROAMING = "button_mvno_roaming_key";
+
+        /**
+         * Whether to disable the lockscreen unlock tab
+         * @hide
+         */
+        public static final String LOCKSCREEN_GESTURES_DISABLE_UNLOCK = "lockscreen_gestures_disable_unlock";
 
         /**
          * @hide
