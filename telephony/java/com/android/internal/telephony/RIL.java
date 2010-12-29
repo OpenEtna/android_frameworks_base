@@ -2928,30 +2928,15 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             dc.number = p.readString();
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
+            p.readInt(); /*num_septet*/
+            p.readInt(); /*num_byte*/
             dc.name = p.readString();
-            dc.namePresentation = p.readInt();
-            int uusInfoPresent = p.readInt();
-            if (uusInfoPresent == 1) {
-                dc.uusInfo = new UUSInfo();
-                dc.uusInfo.setType(p.readInt());
-                dc.uusInfo.setDcs(p.readInt());
-                byte[] userData = p.createByteArray();
-                dc.uusInfo.setUserData(userData);
-                Log
-                        .v(LOG_TAG, String.format("Incoming UUS : type=%d, dcs=%d, length=%d",
-                                dc.uusInfo.getType(), dc.uusInfo.getDcs(),
-                                dc.uusInfo.getUserData().length));
-                Log.v(LOG_TAG, "Incoming UUS : data (string)="
-                        + new String(dc.uusInfo.getUserData()));
-                Log.v(LOG_TAG, "Incoming UUS : data (hex): "
-                        + IccUtils.bytesToHexString(dc.uusInfo.getUserData()));
-            } else {
-                Log.v(LOG_TAG, "Incoming UUS : NOT present!");
-            }
+            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
 
             // Make sure there's a leading + on addresses with a TOA of 145
             dc.number = PhoneNumberUtils.stringFromStringAndTOA(dc.number, dc.TOA);
 
+            Log.i(LOG_TAG,"Got responseCallList: " + dc.toString());
             response.add(dc);
 
             if (dc.isVoicePrivacy) {
