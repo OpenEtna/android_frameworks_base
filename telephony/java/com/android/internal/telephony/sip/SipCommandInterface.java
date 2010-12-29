@@ -369,4 +369,16 @@ class SipCommandInterface extends BaseCommands implements CommandsInterface {
 
     public void exitEmergencyCallbackMode(Message response) {
     }
+
+    // OpenEtna only
+    public void sendSTKInitCompleted() {
+    }
+    public void getModemVersion(Message result){
+    }
+    public void getFactoryVersion(Message result){
+    }
+    public void getHWVersion(Message result){
+    }
+    public void setNetworkSelectionModeManual(String operatorNumeric, String operatorRAT, Message response){
+    }
 }
