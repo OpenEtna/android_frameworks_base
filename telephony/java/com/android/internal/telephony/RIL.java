@@ -2939,6 +2939,14 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             p.readInt(); /*num_byte*/
             dc.name = p.readString();
             dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
+            int uusInfoPresent = p.readInt();
+            if (uusInfoPresent == 1) {
+                // TODO: Copy the data to dc to forward to the apps.
+                // LG's does handle this data!
+                p.readInt();
+                p.readInt();
+                p.createByteArray();
+            }
 
             // On Rogers network where CNAP is supported the caller id information
             // from the 1.6 Korean RILD is sometimes incorrect.
