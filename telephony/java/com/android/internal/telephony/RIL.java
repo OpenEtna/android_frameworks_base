@@ -819,6 +819,10 @@ public final class RIL extends BaseCommands implements CommandsInterface {
           rr.mp.writeInt(1);
           rr.mp.writeInt(PhoneNumberUtils.getEmergencyCategory(address));
         }
+        rr.mp.writeInt(0);
+        rr.mp.writeInt(0);
+        rr.mp.writeInt(0);
+        rr.mp.writeInt(0);
 
         if (uusInfo == null) {
             rr.mp.writeInt(0); // UUS information is absent
