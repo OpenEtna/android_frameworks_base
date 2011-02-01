@@ -71,6 +71,31 @@ const char CameraParameters::KEY_ZOOM_SUPPORTED[] = "zoom-supported";
 const char CameraParameters::KEY_SMOOTH_ZOOM_SUPPORTED[] = "smooth-zoom-supported";
 const char CameraParameters::KEY_CAF[] = "continuous-af";
 const char CameraParameters::KEY_SUPPORTED_CAF[] = "continuous-af-values";
+const char CameraParameters::KEY_FLICKER[] = "flicker";
+const char CameraParameters::KEY_IMAGE_QUALITY[] = "image-quality";
+const char CameraParameters::KEY_LUMA_ADAPTATION[] = "luma-adaptation";
+const char CameraParameters::KEY_MANUAL_FOCUS[] = "manual-focus";
+const char CameraParameters::KEY_MACRO[] = "macro";
+const char CameraParameters::KEY_ARCSOFT[] = "arcsoft";
+const char CameraParameters::KEY_AUTOFOCUS[] = "cancel-autofocus";
+
+const char CameraParameters::MACRO_NONE[] = "0";
+const char CameraParameters::IMAGE_QUALITY_FINE[] = "fine";
+
+const char CameraParameters::IMAGE_QUALITY_MAX[] = "max";
+const char CameraParameters::MANUAL_FOCUS_OFF[] = "off";
+const char CameraParameters::ARCSOFT_OFF[] = "0";
+//const char CameraParameters::ARCSOFT_ENABLE[] = "1";
+const char CameraParameters::EFFECT_MAX[] = "max";
+const char CameraParameters::AUTO_FOCUS_AUTO[] = "1";
+const char CameraParameters::LUMA_ADAPTATION_6[] = "6";
+const char CameraParameters::FLICKER_VALUE[] = "60";
+const char CameraParameters::AUTO_FOCUS_OFF[] = "0";
+const char CameraParameters::IMAGE_QUALITY_NORMAL[] = "normal";
+const char CameraParameters::WHITE_BALANCE_MAX[] = "max";
+const char CameraParameters::FLASH_MODE_MAX[] = "max";
+const char CameraParameters::IMAGE_QUALITY_SUPERFINE[] = "super_fine";
+const char CameraParameters::ANTIBANDING_MAX[] = "max";
 
 const char CameraParameters::TRUE[] = "true";
 
@@ -94,6 +119,10 @@ const char CameraParameters::EFFECT_POSTERIZE[] = "posterize";
 const char CameraParameters::EFFECT_WHITEBOARD[] = "whiteboard";
 const char CameraParameters::EFFECT_BLACKBOARD[] = "blackboard";
 const char CameraParameters::EFFECT_AQUA[] = "aqua";
+const char CameraParameters::EFFECT_GREEN[] = "green";
+const char CameraParameters::EFFECT_RED[] = "red";
+const char CameraParameters::EFFECT_EMBOSS[] = "emboss";
+const char CameraParameters::EFFECT_SKETCH[] = "sketch";
 
 // Values for antibanding settings.
 const char CameraParameters::ANTIBANDING_AUTO[] = "auto";
@@ -125,6 +154,8 @@ const char CameraParameters::SCENE_MODE_SPORTS[] = "sports";
 const char CameraParameters::SCENE_MODE_PARTY[] = "party";
 const char CameraParameters::SCENE_MODE_CANDLELIGHT[] = "candlelight";
 const char CameraParameters::SCENE_MODE_BARCODE[] = "barcode";
+const char CameraParameters::SCENE_MODE_BACKLIGHT[] = "backlight";
+const char CameraParameters::SCENE_MODE_NORMAL[] = "normal";
 
 // Formats for setPreviewFormat and setPictureFormat.
 const char CameraParameters::PIXEL_FORMAT_YUV422SP[] = "yuv422sp";
@@ -179,6 +210,7 @@ const char CameraParameters::ISO_200[] = "ISO200";
 const char CameraParameters::ISO_400[] = "ISO400";
 const char CameraParameters::ISO_800[] = "ISO800";
 const char CameraParameters::ISO_1600[] = "ISO1600";
+const char CameraParameters::ISO_MAX[] = "max";
 
  //Values for Lens Shading
 const char CameraParameters::LENSSHADE_ENABLE[] = "enable";
@@ -422,6 +454,47 @@ void CameraParameters::setPictureFormat(const char *format)
 const char *CameraParameters::getPictureFormat() const
 {
     return get(KEY_PICTURE_FORMAT);
+}
+
+int CameraParameters::getFlicker() const
+{
+	return atoi(get(KEY_FLICKER));
+}
+
+const char* CameraParameters::getImageQuality() const
+{
+	return get(KEY_IMAGE_QUALITY);
+}
+
+const char* CameraParameters::getSceneMode() const
+{
+	return get(KEY_SCENE_MODE);
+}
+
+const char* CameraParameters::getISO() const
+{
+	return get(KEY_ISO_MODE);
+}
+
+int CameraParameters::getSuspendAutoFocus() const
+{
+	return atoi(get(KEY_AUTOFOCUS));
+}
+
+int CameraParameters::getArcSoftCameraEnabledVal() const
+{
+	return atoi(get(KEY_ARCSOFT));
+}
+
+int CameraParameters::getManualFocusValue() const
+{
+	LOGE("getManualFocusValue -stub");
+	return 0;
+}
+
+int CameraParameters::getMacro() const
+{
+	return atoi(get(KEY_MACRO));
 }
 
 void CameraParameters::dump() const

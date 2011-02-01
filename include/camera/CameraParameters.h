@@ -61,7 +61,16 @@ public:
     int getOrientation() const;
     void setOrientation(int orientation);
 
-    void dump() const;
+    int getFlicker() const;
+	const char* getImageQuality() const;
+	const char* getSceneMode() const;
+	const char* getISO() const;
+	int getSuspendAutoFocus() const;
+	int getArcSoftCameraEnabledVal() const;
+	int getManualFocusValue() const;
+	int getMacro() const;
+
+	void dump() const;
     status_t dump(int fd, const Vector<String16>& args) const;
 
     // Parameter keys to communicate between camera application and driver.
@@ -261,7 +270,10 @@ public:
     // Example value: "true". Read only.
     static const char KEY_SMOOTH_ZOOM_SUPPORTED[];
 
-    // Value for KEY_ZOOM_SUPPORTED or KEY_SMOOTH_ZOOM_SUPPORTED.
+	static const char KEY_FLICKER[];
+    static const char KEY_IMAGE_QUALITY[];
+
+	// Value for KEY_ZOOM_SUPPORTED or KEY_SMOOTH_ZOOM_SUPPORTED.
     static const char TRUE[];
 
     //Continuous AF.
@@ -288,6 +300,10 @@ public:
     static const char EFFECT_WHITEBOARD[];
     static const char EFFECT_BLACKBOARD[];
     static const char EFFECT_AQUA[];
+	static const char EFFECT_GREEN[];
+	static const char EFFECT_RED[];
+	static const char EFFECT_SKETCH[];
+	static const char EFFECT_EMBOSS[];
 
     // Values for antibanding settings.
     static const char ANTIBANDING_AUTO[];
@@ -329,6 +345,8 @@ public:
     // Applications are looking for a barcode. Camera driver will be optimized
     // for barcode reading.
     static const char SCENE_MODE_BARCODE[];
+	static const char SCENE_MODE_BACKLIGHT[];
+	static const char SCENE_MODE_NORMAL[];
 
     // Formats for setPreviewFormat and setPictureFormat.
     static const char PIXEL_FORMAT_YUV422SP[];
@@ -363,6 +381,7 @@ public:
     static const char ISO_400[];
     static const char ISO_800[];
     static const char ISO_1600[];
+	static const char ISO_MAX[];
     // Values for Lens Shading
     static const char LENSSHADE_ENABLE[] ;
     static const char LENSSHADE_DISABLE[] ;
@@ -370,6 +389,27 @@ public:
     // Values for Continuous AF
     static const char CAF_OFF[] ;
     static const char CAF_ON[] ;
+
+	static const char MACRO_NONE[];
+	static const char IMAGE_QUALITY_NORMAL[];
+	static const char IMAGE_QUALITY_FINE[];
+	static const char IMAGE_QUALITY_SUPERFINE[];
+	static const char IMAGE_QUALITY_MAX[];
+	static const char KEY_MANUAL_FOCUS[];
+	static const char MANUAL_FOCUS_OFF[];
+	static const char ARCSOFT_OFF[];
+	static const char EFFECT_MAX[];
+	static const char KEY_LUMA_ADAPTATION[];
+	static const char LUMA_ADAPTATION_6[];
+	static const char KEY_AUTOFOCUS[];
+	static const char AUTO_FOCUS_AUTO[];
+	static const char AUTO_FOCUS_OFF[];
+	static const char FLICKER_VALUE[];
+	static const char WHITE_BALANCE_MAX[];
+	static const char KEY_MACRO[];
+	static const char FLASH_MODE_MAX[];
+	static const char KEY_ARCSOFT[];
+	static const char ANTIBANDING_MAX[];
 
 private:
     DefaultKeyedVector<String8,String8>    mMap;
