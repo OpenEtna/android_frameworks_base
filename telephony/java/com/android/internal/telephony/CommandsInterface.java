@@ -1406,4 +1406,5 @@ public interface CommandsInterface {
     public void getModemVersion(Message result);
     public void getFactoryVersion(Message result);
     public void getHWVersion(Message result);
+    public void sendSTKInitCompleted();
 }

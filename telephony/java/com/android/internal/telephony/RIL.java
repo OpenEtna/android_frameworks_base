@@ -2037,7 +2037,9 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case 1: state = RadioState.RADIO_UNAVAILABLE; break;
             case 2: state = RadioState.SIM_NOT_READY; break;
             case 3: state = RadioState.SIM_LOCKED_OR_ABSENT; break;
-            case 4: state = RadioState.SIM_READY; break;
+            case 4: state = RadioState.SIM_READY;
+                sendSTKInitCompleted();
+                break;
             case 5: state = RadioState.RUIM_NOT_READY; break;
             case 6: state = RadioState.RUIM_READY; break;
             case 7: state = RadioState.RUIM_LOCKED_OR_ABSENT; break;
@@ -2287,6 +2289,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_EXIT_EMERGENCY_CALLBACK_MODE: ret = responseVoid(p); break;
             case RIL_REQUEST_REPORT_SMS_MEMORY_STATUS: ret = responseVoid(p); break;
             case RIL_REQUEST_REPORT_STK_SERVICE_IS_RUNNING: ret = responseVoid(p); break;
+            case RIL_REQUEST_STK_APP_INIT_COMPLETED: ret = responseVoid(p); break;
             default:
                 throw new RuntimeException("Unrecognized solicited response: " + rr.mRequest);
             //break;
@@ -3329,6 +3332,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case RIL_REQUEST_GET_MODEM_VERSION: return "RIL_REQUEST_GET_MODEM_VERSION";
             case RIL_REQUEST_GET_FACTORY_VERSION: return "RIL_REQUEST_GET_FACTORY_VERSION";
             case RIL_REQUEST_GET_HW_VERSION: return "RIL_REQUEST_GET_HW_VERSION";
+            case RIL_REQUEST_STK_APP_INIT_COMPLETED: return "RIL_REQUEST_STK_APP_INIT_COMPLETED";
             default: return "<unknown request>";
         }
     }
@@ -3542,6 +3546,14 @@ public final class RIL extends BaseCommands implements CommandsInterface {
      */
     public void exitEmergencyCallbackMode(Message response) {
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_EXIT_EMERGENCY_CALLBACK_MODE, response);
+
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
+
+        send(rr);
+    }
+
+    public void sendSTKInitCompleted() {
+        RILRequest rr = RILRequest.obtain(RIL_REQUEST_STK_APP_INIT_COMPLETED, null);
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
