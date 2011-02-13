@@ -1506,6 +1506,10 @@ class PowerManagerService extends IPowerManager.Stub
                     lightFilterStop();
                     resetLastLightValues();
                 }
+				else{
+					mLightSensorKeyboardBrightness = 1; //active keyboard light whatever it was the previous state so when the keyboard becomes visible,
+														// it will be lit. This value will change when the light sensor receives a new value
+				}
             }
         }
         return err;
@@ -2386,13 +2390,9 @@ class PowerManagerService extends IPowerManager.Stub
                         (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
                         (mCustomLightEnabled ? mCustomButtonValues : mButtonBacklightValues));
                 int keyboardValue;
-                if (mKeyboardVisible) {
-                    keyboardValue = getAutoBrightnessValue(value, mLastKeyboardValue,
+                keyboardValue = getAutoBrightnessValue(value, mLastKeyboardValue,
                             (mCustomLightEnabled ? mCustomLightLevels : mAutoBrightnessLevels),
                             (mCustomLightEnabled ? mCustomKeyboardValues : mKeyboardBacklightValues));
-                } else {
-                    keyboardValue = 0;
-                }
                 mLightSensorScreenBrightness = lcdValue;
                 mLightSensorButtonBrightness = buttonValue;
                 mLightSensorKeyboardBrightness = keyboardValue;
@@ -2442,19 +2442,25 @@ class PowerManagerService extends IPowerManager.Stub
                          mLastButtonValue = value;
                     }
                 }
-                if (mButtonBrightnessOverride < 0 || !mKeyboardVisible) {
-                    if (ANIMATE_KEYBOARD_LIGHTS) {
-                        if (mKeyboardBrightness.setTargetLocked(keyboardValue,
-                                AUTOBRIGHTNESS_ANIM_STEPS, INITIAL_BUTTON_BRIGHTNESS,
-                                (int)mKeyboardBrightness.curValue)) {
-                            startAnimation = true;
-                            mLastKeyboardValue = value;
-                        }
-                    } else {
-                        mKeyboardLight.setBrightness(keyboardValue);
-                        mLastKeyboardValue = value;
-                    }
-                }
+				if (!mKeyboardVisible){
+						mKeyboardLight.setBrightness(0);
+						mLastKeyboardValue = value;
+				}
+				else{
+					if (mButtonBrightnessOverride < 0) {
+						if (ANIMATE_KEYBOARD_LIGHTS) {
+							if (mKeyboardBrightness.setTargetLocked(keyboardValue,
+									AUTOBRIGHTNESS_ANIM_STEPS, INITIAL_BUTTON_BRIGHTNESS,
+									(int)mKeyboardBrightness.curValue)) {
+								startAnimation = true;
+								mLastKeyboardValue = value;
+							}
+						} else {
+							mKeyboardLight.setBrightness(keyboardValue);
+							mLastKeyboardValue = value;
+						}
+					}
+				}
                 if (startAnimation) {
                     if (mDebugLightSensor) {
                         Slog.i(TAG, "lightSensorChangedLocked scheduling light animator");
@@ -2579,11 +2585,7 @@ class PowerManagerService extends IPowerManager.Stub
             }
             if (mKeyboardVisible != visible) {
                 mKeyboardVisible = visible;
-                // don't signal user activity if the screen is off; other code
-                // will take care of turning on due to a true change to the lid
-                // switch and synchronized with the lock screen.
-                if ((mPowerState & SCREEN_ON_BIT) != 0) {
-                    if (mUseSoftwareAutoBrightness) {
+                if (mUseSoftwareAutoBrightness) {
                         // force recompute of backlight values
                         if (mLightSensorValue >= 0) {
                             int value = (int)mLightSensorValue;
@@ -2591,14 +2593,24 @@ class PowerManagerService extends IPowerManager.Stub
                             lightSensorChangedLocked(value);
                             lightFilterReset((int)mLightSensorValue);
                         }
-                    }
+                }
+				// don't signal user activity if the screen is off; other code
+                // will take care of turning on due to a true change to the lid
+                // switch and synchronized with the lock screen.
+				
+                if ((mPowerState & SCREEN_ON_BIT) != 0) {
                     userActivity(SystemClock.uptimeMillis(), false, BUTTON_EVENT, true);
                 }
                 // If hiding keyboard, turn off leds
                 if (!visible) {
                     setKeyboardLight(false, 1);
                     setKeyboardLight(false, 2);
-                }
+					//turn off keyboard lights hack - this should have been done elsewhere but as it isn't working this will solve some problems
+					mKeyboardLight.setBrightness(0);
+                }else{
+					//if showing keyboard, restore last known state
+					mKeyboardLight.setBrightness(mLightSensorKeyboardBrightness);
+				}
             }
         }
     }
