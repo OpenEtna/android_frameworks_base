@@ -44,7 +44,7 @@ endif # USE_CAMERA_STUB
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:=               \
-    CameraService.cpp
+    CameraService.cpp NoGingerbread.cpp
 
 LOCAL_SHARED_LIBRARIES:= \
     libui \
@@ -87,5 +87,7 @@ ifeq ($(BOARD_USE_CAF_LIBCAMERA), true)
     LOCAL_CFLAGS += -DBOARD_USE_CAF_LIBCAMERA
 endif
 
+
+$(warning $(LOCAL_SHARED_LIBRARIES))
 
 include $(BUILD_SHARED_LIBRARY)
