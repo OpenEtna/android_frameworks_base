@@ -1758,6 +1758,30 @@ public final class Settings {
         public static final String SELECTED_CUSTOM_APP = "selected_custom_app";
 
         /**
+         * Specifies whether or not to use a custom app on search key press
+         * @hide
+         */
+        public static final String USE_CUSTOM_SEARCH_APP_TOGGLE = "use_custom_search_app_toggle";
+
+        /**
+         * Contains activity to start on search key press
+         * @hide
+         */
+        public static final String USE_CUSTOM_SEARCH_APP_ACTIVITY = "use_custom_search_app_activity";
+
+        /**
+         * Specifies whether or not to use a custom app on long search key press
+         * @hide
+         */
+        public static final String USE_CUSTOM_LONG_SEARCH_APP_TOGGLE = "use_custom_long_search_app_toggle";
+
+        /**
+         * Contains activity to start on long search key press
+         * @hide
+         */
+        public static final String USE_CUSTOM_LONG_SEARCH_APP_ACTIVITY = "use_custom_long_search_app_activity";
+
+        /**
          * Stores the uri of the defined application for user key 1
          * @hide
          */
@@ -2102,16 +2126,36 @@ public final class Settings {
             "lockscreen_quick_unlock_control";
 
         /**
-         * Whether to use the custom Phone and Messaging SlidingTab
+         * Whether to use the custom app on both slider style and rotary style
          * @hide
          */
-        public static final String LOCKSCREEN_PHONE_MESSAGING_TAB = "lockscreen_phone_messaging_tab";
+        public static final String LOCKSCREEN_CUSTOM_APP_TOGGLE = "lockscreen_custom_app_toggle";
 
         /**
-         * App to launch with the custom messaging tab
+         * App to launch with custom app toggle enabled
          * @hide
          */
-        public static final String LOCKSCREEN_MESSAGING_TAB_APP = "lockscreen_messaging_tab_app";
+        public static final String LOCKSCREEN_CUSTOM_APP_ACTIVITY = "lockscreen_custom_app_activity";
+
+        /**
+         * 1: Show custom app icon (currently cm logo) as with new patch
+         * 2: Show messaging app icon as in old lockscreen
+         * possibly more in the future (if more png files are drawn)
+         * @hide
+         */
+        public static final String LOCKSCREEN_CUSTOM_ICON_STYLE = "lockscreen_custom_icon_style";
+
+        /**
+         * When enabled, rotary lockscreen switches app starter and unlock, so you can drag down to unlock
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTARY_UNLOCK_DOWN = "lockscreen_rotary_unlock_down";
+
+        /**
+         * When enabled, directional hint arrows are supressed
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTARY_HIDE_ARROWS = "lockscreen_rotary_hide_arrows";
 
         /**
          * Sets the lockscreen style
@@ -2216,13 +2260,19 @@ public final class Settings {
         public static final String LOCKSCREEN_ALWAYS_BATTERY = "lockscreen_always_battery";
 
         /**
-         * Whether to use custom notification bar
+         * Whether to use lockscreen music controls
          * @hide
          */
         public static final String LOCKSCREEN_MUSIC_CONTROLS = "lockscreen_music_controls";
 
         /**
-         * Whether to use custom notification bar
+         * Whether to use lockscreen music controls with headset connected
+         * @hide
+         */
+        public static final String LOCKSCREEN_MUSIC_CONTROLS_HEADSET = "lockscreen_music_controls_headset";
+
+        /**
+         * Whether to use always use lockscreen music controls
          * @hide
          */
         public static final String LOCKSCREEN_ALWAYS_MUSIC_CONTROLS = "lockscreen_always_music_controls";

@@ -138,6 +138,8 @@ SensorDevice::SensorDevice()
             for (size_t i=0 ; i<size_t(count) ; i++) {
                 mActivationCount.add(list[i].handle, model);
                 if (mOldSensorsCompatMode) {
+                    mOldSensorsList = list;
+                    mOldSensorsCount = count;
                     mSensorDataDevice->data_open(mSensorDataDevice,
                             mSensorControlDevice->open_data_source(mSensorControlDevice));
                     mSensorControlDevice->activate(mSensorControlDevice, list[i].handle, 0);
@@ -182,7 +184,7 @@ ssize_t SensorDevice::poll(sensors_event_t* buffer, size_t count) {
     if (!mSensorDevice && !mOldSensorsCompatMode) return NO_INIT;
     if (mOldSensorsCompatMode) {
         size_t pollsDone = 0;
-        LOGV("%d buffers were requested",count);
+        //LOGV("%d buffers were requested",count);
         while (!mOldSensorsEnabled) {
             sleep(1);
             LOGV("Waiting...");
@@ -190,19 +192,46 @@ ssize_t SensorDevice::poll(sensors_event_t* buffer, size_t count) {
         while (pollsDone < (size_t)mOldSensorsEnabled && pollsDone < count) {
             sensors_data_t oldBuffer;
             long result =  mSensorDataDevice->poll(mSensorDataDevice, &oldBuffer);
-            if (!result || result > SENSOR_TYPE_ROTATION_VECTOR) {
-                LOGV("Useless result at round %d",pollsDone);
+            int sensorType = -1;
+ 
+            if (result == 0x7FFFFFFF) {
+                continue;
+            } else {
+                /* the old data_poll is supposed to return a handle,
+                 * which has to be mapped to the type. */
+                for (size_t i=0 ; i<size_t(mOldSensorsCount) && sensorType < 0 ; i++) {
+                    if (mOldSensorsList[i].handle == result) {
+                        sensorType = mOldSensorsList[i].type;
+                        LOGV("mapped sensor type to %d",sensorType);
+                    }
+                }
+            }
+            if ( sensorType <= 0 ||
+                 sensorType > SENSOR_TYPE_ROTATION_VECTOR) {
+                LOGV("Useless output at round %u from %d",pollsDone, oldBuffer.sensor);
+                count--;
                 continue;
             }
+            buffer[pollsDone].version = sizeof(struct sensors_event_t);
             buffer[pollsDone].timestamp = oldBuffer.time;
-            buffer[pollsDone].sensor = oldBuffer.sensor;
-            buffer[pollsDone].type = oldBuffer.sensor;
-            buffer[pollsDone].acceleration = oldBuffer.acceleration;
-            buffer[pollsDone].magnetic = oldBuffer.magnetic;
-            buffer[pollsDone].orientation = oldBuffer.orientation;
+            buffer[pollsDone].type = sensorType;
+            buffer[pollsDone].sensor = result;
+            /* This part is a union. Regardless of the sensor type,
+             * we only need to copy a sensors_vec_t and a float */
+            buffer[pollsDone].acceleration = oldBuffer.vector;
             buffer[pollsDone].temperature = oldBuffer.temperature;
-            buffer[pollsDone].distance = oldBuffer.distance;
-            buffer[pollsDone].light = oldBuffer.light;
+            LOGV("Adding results for sensor %d", buffer[pollsDone].sensor);
+#ifdef FOXCONN_SENSORS
+            /* Fix ridiculous API breakages from FIH. */
+            /* These idiots are returning -1 for FAR, and 1 for NEAR */
+            if (sensorType == SENSOR_TYPE_PROXIMITY) {
+                if (buffer[pollsDone].distance > 0) {
+                    buffer[pollsDone].distance = 0;
+                } else {
+                    buffer[pollsDone].distance = 1;
+                }
+            }
+#endif
             pollsDone++;
         }
         return pollsDone;
