@@ -1507,8 +1507,9 @@ class PowerManagerService extends IPowerManager.Stub
                     resetLastLightValues();
                 }
 				else{
-					mLightSensorKeyboardBrightness = 1; //active keyboard light whatever it was the previous state so when the keyboard becomes visible,
-														// it will be lit. This value will change when the light sensor receives a new value
+					//light sensor has been enabled so it's time to call 
+					//lightsensorchanged with the new value
+					lightSensorChangedLocked(mLightSensorOfflineValue);					
 				}
             }
         }
@@ -3094,12 +3095,16 @@ class PowerManagerService extends IPowerManager.Stub
             long identity = Binder.clearCallingIdentity();
             try {
                 if (enable) {
+					mSensorManager.unregisterListener(mLightListenerOffline);
                     mSensorManager.registerListener(mLightListener, mLightSensor,
                             SensorManager.SENSOR_DELAY_NORMAL);
                 } else {
                     lightFilterStop();
                     mSensorManager.unregisterListener(mLightListener);
                     mHandler.removeCallbacks(mAutoBrightnessTask);
+					
+					mSensorManager.registerListener(mLightListenerOffline, mLightSensor,
+                            SensorManager.SENSOR_DELAY_NORMAL);
                 }
             } finally {
                 Binder.restoreCallingIdentity(identity);
@@ -3176,6 +3181,10 @@ class PowerManagerService extends IPowerManager.Stub
                 }
 
                 int value = (int)event.values[0];
+				
+				//also set offline value so it will always be ready
+				mLightSensorOfflineValue = value;				
+				
                 long milliseconds = SystemClock.elapsedRealtime();
                 if (mDebugLightSensor) {
                     Slog.d(TAG, "onSensorChanged: light value: " + value);
@@ -3231,9 +3240,29 @@ class PowerManagerService extends IPowerManager.Stub
                 }
             }
         }
-
+		
+		
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             // ignore
         }
     };
+	/*This listener will be used when the phone is locked so the last value is not lost - to be used when the phone wakes up*/
+	private int mLightSensorOfflineValue = 0;
+	SensorEventListener mLightListenerOffline = new SensorEventListener() {
+		public void onSensorChanged(SensorEvent event) {
+			synchronized (mLocks) {
+				int value = (int)event.values[0];
+				
+				long milliseconds = SystemClock.elapsedRealtime();
+				if (mDebugLightSensor) {
+					Slog.d(TAG, "onSensorChanged Offline: light value: " + value);
+				}
+
+				mLightSensorOfflineValue = value;               
+			}
+		}
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// ignore
+		}
+	};
 }
