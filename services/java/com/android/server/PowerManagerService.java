@@ -1507,9 +1507,12 @@ class PowerManagerService extends IPowerManager.Stub
                     resetLastLightValues();
                 }
 				else{
-					//light sensor has been enabled so it's time to call 
-					//lightsensorchanged with the new value
-					lightSensorChangedLocked(mLightSensorOfflineValue);					
+					mLightSensorKeyboardBrightness = 1; //active keyboard light whatever it was the previous state so when the keyboard becomes visible,
+														//it will be lit. This value will change when the light sensor receives a new value
+					//will apply this settings in LIGHT_SENSOR_DELAY unless there is a sensor change
+					mHandler.removeCallbacks(mAutoBrightnessTask);
+					mLightSensorPendingValue = mLightSensorOfflineValue;
+					mHandler.postDelayed(mAutoBrightnessTask, LIGHT_SENSOR_DELAY);					
 				}
             }
         }
