@@ -927,6 +927,7 @@ public class GpsLocationProvider implements LocationProviderInterface {
                 Log.e(TAG, "native_start failed in startNavigating()");
                 return;
             }
+            reportStatus(GPS_STATUS_SESSION_BEGIN);
 
             // reset SV count to zero
             updateStatus(LocationProvider.TEMPORARILY_UNAVAILABLE, 0);
@@ -1168,13 +1169,6 @@ public class GpsLocationProvider implements LocationProviderInterface {
                         ((mSvMasks[USED_FOR_FIX_MASK] & (1 << (mSvs[i] - 1))) == 0 ? "" : "U"));
             }
         }
-
-        /* BUG workaround: the korean-v10t libloc-api does not send
-         * GPS_STATUS_SESSION_BEGIN (but does send GPS_STATUS_SESSION_END)
-         * so we emulate GPS_STATUS_SESSION_BEGIN when we receive the first location */
-        if( !mNavigating )
-          reportStatus(GPS_STATUS_SESSION_BEGIN);
- 
 
         updateStatus(mStatus, svCount);
 
